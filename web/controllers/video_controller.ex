@@ -3,6 +3,7 @@ defmodule Rumbl.VideoController do
 
   alias Rumbl.Video
 
+  # converts empty strings to nil
   plug :scrub_params, "video" when action in [:create, :update]
 
   def index(conn, _params) do
