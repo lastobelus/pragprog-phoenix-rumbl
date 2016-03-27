@@ -24,5 +24,9 @@ defmodule Rumbl.Video do
   def changeset(model, params \\ :empty) do
     model
     |> cast(params, @required_fields, @optional_fields)
+    # this asserts that category_id refers to a category_id that exists
+    # in the categories table, via the foreign_key database constraint
+    # that the `add :category_id, references(:categories) migration` creates for us
+    |> assoc_constraint(:category)
   end
 end

@@ -28,6 +28,12 @@ defmodule Rumbl.User do
     # so we can validate virtual fields the same as we validate
     # database attributes
     |> validate_length(:password, min: 6, max: 100)
+    # unlike validates_uniqueness_of in Rails, this works directly together
+    # with the unique index on username we defined in our migration, and is
+    # actually concurrent-safe (to the point that the database is), AND
+    # it automatically converts into a normal validation error for us --
+    # no special handling needed
+    |> unique_constraint(:username)
     |> put_pass_hash()
   end
 
