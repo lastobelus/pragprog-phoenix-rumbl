@@ -20,7 +20,7 @@ defmodule Rumbl.User do
   # diffferent validation strategies, and/or combinations
   # of optional/required fields are accomplished simply
   # by defining different changeset functions
-  def registration_changeset(model, params) do
+  def registration_changeset(model, params \\ :empty) do
     model
     |> changeset(params)
     |> cast(params, ~w(password), [])

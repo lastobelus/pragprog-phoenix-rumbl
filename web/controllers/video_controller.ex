@@ -1,5 +1,6 @@
 defmodule Rumbl.VideoController do
   use Rumbl.Web, :controller
+  require Logger
 
   alias Rumbl.Video
   alias Rumbl.Category
@@ -22,6 +23,7 @@ defmodule Rumbl.VideoController do
   end
 
   def create(conn, %{"video" => video_params}, user) do
+    Logger.debug "creating a video"
     changeset =
       user
       |> build_assoc(:videos)
