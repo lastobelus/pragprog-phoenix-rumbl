@@ -71,7 +71,7 @@ defmodule Rumbl.VideoControllerTest do
   test "does not update invalid video", %{conn: conn, user: user} do
     video = insert_video(user, @valid_attrs)
 
-    conn = put(conn, video_path(conn, :update, video), video: %{title: ""})
+    conn = put(conn, video_path(conn, :update, video, video: %{title: ""}))
 
     assert html_response(conn, 200) =~ "check the errors"
     assert Repo.get(Video, video.id).title == video.title
@@ -84,6 +84,29 @@ defmodule Rumbl.VideoControllerTest do
     conn = delete conn, video_path(conn, :delete, video)
     assert redirected_to(conn) == video_path(conn, :index)
     refute Repo.get(Video, video.id)
+  end
+
+  @tag login_as: "max"
+  test "authorizes actions against access by other users", %{conn: conn, user: owner} do
+    video = insert_video(owner, @valid_attrs)
+    non_owner = insert_user(username: "nonowner")
+    conn = assign(conn, :current_user, non_owner)
+
+    assert_error_sent :not_found, fn ->
+      get(conn, video_path(conn, :show, video))
+    end
+
+    assert_error_sent :not_found, fn ->
+      get(conn, video_path(conn, :edit, video))
+    end
+
+    assert_error_sent :not_found, fn ->
+      put(conn, video_path(conn, :update, video, video: @valid_attrs))
+    end
+
+    assert_error_sent :not_found, fn ->
+      delete(conn, video_path(conn, :delete, video))
+    end
   end
 
   test "requires user authentication on all actions", %{conn: conn} do
