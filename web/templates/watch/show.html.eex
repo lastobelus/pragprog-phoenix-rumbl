@@ -1,0 +1,25 @@
+<h1><%= @video.title %></h1>
+<div class="row">
+  <div class="col-sm-7">
+    <%= content_tag :div, id: "video", data: [id: @video.id, player_id: player_id(@video)] do %>
+    <% end %>
+  </div>
+  <div class="col-sm-5">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title">Annotations</h3>
+      </div>
+      <div class="panel-body annotations" id="msg-container">
+
+      </div>
+      <div class="panel-footer">
+        <textarea id="msg-input"
+                  rows="3"
+                  class="form-control"
+                  placeholder="Comment…"></textarea>
+        <button   id="msg-submit" class="btn btn-primary form-control"></button>
+      </div>
+    </div>
+  </div>
+</div>
+
