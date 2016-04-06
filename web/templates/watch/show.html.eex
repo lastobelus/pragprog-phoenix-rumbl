@@ -17,7 +17,7 @@
                   rows="3"
                   class="form-control"
                   placeholder="Comment…"></textarea>
-        <button   id="msg-submit" class="btn btn-primary form-control"></button>
+        <button   id="msg-submit" class="btn btn-primary form-control">Send</button>
       </div>
     </div>
   </div>

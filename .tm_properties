@@ -1,1 +1,2 @@
 PHOENIX_APP_NAME = Rumbl
+excludeDirectories = '{$excludeDirectories,_build,deps}'

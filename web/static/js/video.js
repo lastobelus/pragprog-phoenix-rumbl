@@ -26,11 +26,24 @@ let Video = {
     })
 
     videoChannel.on("new_annotation", (resp) => {
-      this.renderAnnotation(msgContainer, resp)
+      videoChannel.params.last_seen_id = resp.id
+      this.scheduleMessages(msgContainer, [resp])
+    })
+
+    msgContainer.addEventListener("click", e => {
+      e.preventDefault()
+      let seconds = e.target.getAttribute("data-seek") || e.target.parentNode.getAttribute("data-seek")
+      if(!seconds) return
+
+      Player.seekTo(seconds)
     })
 
     videoChannel.join()
-      .receive("ok", resp => console.log("joined the video channel", resp))
+      .receive("ok", (resp) => {
+        let ids = resp.annotations.map(annotation => annotation.id)
+        videoChannel.params.last_seen_id = Math.max(...ids)
+        this.scheduleMessages(msgContainer, resp.annotations)
+      })
       .receive("error", reason => console.log("join failed", reason))
   },
 
@@ -40,14 +53,60 @@ let Video = {
     return div.innerHTML
   },
 
+  scheduleMessages(msgContainer, annotations) {
+    setTimeout(() => {
+      let currentTime = Player.getCurrentTime()
+      let remaining = this.renderAtTime(annotations, currentTime, msgContainer)
+
+      this.scheduleMessages(msgContainer, remaining)
+    }, 1000)
+  },
+
+  renderAtTime(annotations, seconds, msgContainer) {
+    return annotations.filter(annotation => {
+      if(annotation.at > seconds) {
+        return true;
+      } else {
+        this.renderAnnotation(msgContainer, annotation)
+        return false;
+      }
+    });
+  },
+
+  formatTime(at) {
+    let date = new Date(null);
+    date.setSeconds(at / 1000)
+    return date.toISOString().substr(14, 5);
+  },
+
   renderAnnotation(msgContainer, {user, body, at}) {
-    console.log("renderAnnotation:", body, at)
+/*    console.log("renderAnnotation:", body, at)*/
     let template = document.createElement("div");
     template.innerHTML = `
     <a href="#" data-seek="${this.esc(at)}">
+    <span class="time">[${this.formatTime(at)}]</span>
     <b>${this.esc(user.username)}</b>: ${this.esc(body)}
+    </a>
     `
-    msgContainer.appendChild(template)
+
+    let annotationList = msgContainer.children
+/*    console.log("annotationList",annotationList)*/
+    var ix = annotationList.length
+/*    console.log('ix: ', ix);*/
+    var annotationContainer
+    while(--ix >= 0) {
+/*      console.log("checking "+ix)*/
+      annotationContainer = annotationList[ix]
+      let childAt = parseInt(annotationContainer.firstElementChild.getAttribute("data-seek"))
+      if(childAt < at) {
+        break;
+      }
+    }
+    if(annotationContainer) {
+      annotationContainer = annotationContainer.nextSibling
+    }
+
+    msgContainer.insertBefore(template, annotationContainer)
     msgContainer.scrollTop = msgContainer.scrollHeight
   }
 }
