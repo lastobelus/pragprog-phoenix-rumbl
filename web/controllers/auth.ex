@@ -45,7 +45,7 @@ defmodule Rumbl.Auth do
       user && checkpw(password, user.password_hash) ->
         {:ok, login(conn, user)}
       user ->
-        {:error, :unauthorized, :conn}
+        {:error, :unauthorized, conn}
       true ->
         dummy_checkpw()
         {:error, :not_found, conn}

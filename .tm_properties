@@ -1,2 +1,3 @@
 PHOENIX_APP_NAME = Rumbl
+exclude = '{$exclude,*.map}'
 excludeDirectories = '{$excludeDirectories,_build,deps}'
