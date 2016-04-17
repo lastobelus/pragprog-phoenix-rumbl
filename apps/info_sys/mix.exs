@@ -1,8 +1,8 @@
-defmodule Infosys.Mixfile do
+defmodule InfoSys.Mixfile do
   use Mix.Project
 
   def project do
-    [app: :infosys,
+    [app: :info_sys,
      version: "0.0.1",
      build_path: "../../_build",
      config_path: "../../config/config.exs",
@@ -19,7 +19,7 @@ defmodule Infosys.Mixfile do
   # Type "mix help compile.app" for more information
   def application do
     [applications: [:logger],
-     mod: {Infosys, []}]
+     mod: {InfoSys, []}]
   end
 
   # Dependencies can be Hex packages:
@@ -36,6 +36,8 @@ defmodule Infosys.Mixfile do
   #
   # Type "mix help deps" for more examples and options
   defp deps do
-    []
+    [
+      {:sweet_xml, "~> 0.5.0"}
+    ]
   end
 end

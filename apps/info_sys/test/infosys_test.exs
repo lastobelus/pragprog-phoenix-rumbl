@@ -1,6 +1,6 @@
-defmodule InfosysTest do
+defmodule InfoSysTest do
   use ExUnit.Case
-  doctest Infosys
+  doctest InfoSys
 
   test "the truth" do
     assert 1 + 1 == 2

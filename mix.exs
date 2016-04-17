@@ -1,4 +1,4 @@
-defmodule Rumbl.Mixfile do
+defmodule Rumbrella.Mixfile do
   use Mix.Project
 
   def project do

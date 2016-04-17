@@ -1,5 +1,23 @@
-defmodule Rumbl.InfoSys do
-  @backends [Rumbl.InfoSys.Wolfram]
+defmodule InfoSys do
+  use Application
+
+  @backends [InfoSys.Wolfram]
+
+  # See http://elixir-lang.org/docs/stable/elixir/Application.html
+  # for more information on OTP Applications
+  def start(_type, _args) do
+    import Supervisor.Spec, warn: false
+
+    children = [
+      # Define workers and child supervisors to be supervised
+      # worker(InfoSys.Worker, [arg1, arg2, arg3]),
+    ]
+
+    # See http://elixir-lang.org/docs/stable/elixir/Supervisor.html
+    # for other strategies and supported options
+    opts = [strategy: :one_for_one, name: InfoSys.Supervisor]
+    InfoSys.Supervisor.start_link()
+  end
 
   defmodule Result do
     defstruct score: 0, text: nil, url: nil, backend: nil
@@ -23,7 +41,7 @@ defmodule Rumbl.InfoSys do
   def spawn_query(backend, query, limit) do
     query_ref = make_ref()
     opts = [backend, query, query_ref, self(), limit]
-    {:ok, pid} = Supervisor.start_child(Rumbl.InfoSys.Supervisor, opts)
+    {:ok, pid} = Supervisor.start_child(InfoSys.Supervisor, opts)
     monitor_ref = Process.monitor(pid)
     {pid, monitor_ref, query_ref}
   end

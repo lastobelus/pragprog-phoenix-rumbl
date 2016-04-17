@@ -1,4 +1,4 @@
-# Infosys
+# InfoSys
 
 **TODO: Add description**
 
